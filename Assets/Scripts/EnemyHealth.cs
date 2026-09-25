@@ -1,21 +1,59 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
+    // 스폰 매니저가 적 사망을 감지하기 위한 이벤트
+    public event Action OnEnemyDied;
+
+    [Header("체력 설정")]
     [SerializeField] private int maxHealth = 30;
     private int currentHealth;
 
+    [Header("피격 연출 (선택사항)")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Color damageColor = Color.red;
+    private Color originalColor = Color.white;
+    private Coroutine flashCoroutine;
+
     private void Awake()
     {
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = GetComponent(typeof(SpriteRenderer)) as SpriteRenderer;
+            if (spriteRenderer == null)
+            {
+                spriteRenderer = GetComponentInChildren(typeof(SpriteRenderer)) as SpriteRenderer;
+            }
+        }
+    }
+
+    private void OnEnable()
+    {
         currentHealth = maxHealth;
+
+        if (flashCoroutine != null)
+        {
+            StopCoroutine(flashCoroutine);
+            flashCoroutine = null;
+        }
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = originalColor;
+        }
     }
 
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        Debug.Log($"적 피격! 남은 체력: {currentHealth}");
 
-        // 피격 효과음 또는 반짝임 연출 추가 가능
+        if (spriteRenderer != null)
+        {
+            if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+            flashCoroutine = StartCoroutine(FlashRoutine());
+        }
 
         if (currentHealth <= 0)
         {
@@ -23,9 +61,18 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
+    private IEnumerator FlashRoutine()
+    {
+        spriteRenderer.color = damageColor;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = originalColor;
+        flashCoroutine = null;
+    }
+
     private void Die()
     {
-        // 사망 효과음 / 드롭 아이템 / 파티클 로직 구현 위치
+        // 적이 죽을 때 이벤트 발생
+        OnEnemyDied?.Invoke();
         Destroy(gameObject);
     }
 }

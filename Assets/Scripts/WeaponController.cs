@@ -1,15 +1,18 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // 신버전 Input System 사용
+using UnityEngine.InputSystem;
 
 public class WeaponController : MonoBehaviour
 {
     [Header("무기 연결")]
-    [SerializeField] private Transform weaponPivot; // 무기 회전 중심
-    [SerializeField] private Transform muzzle;      // 총알 발사 위치
-    [SerializeField] private GameObject bulletPrefab; // 총알 프리팹
+    [SerializeField] private Transform weaponPivot;
+    [SerializeField] private Transform muzzle;
+    [SerializeField] private GameObject bulletPrefab;
+
+    [Header("캐릭터 뒤집기 설정")]
+    [SerializeField] private SpriteRenderer characterSprite; // 💡 Inspector에서 직접 드래그 연결
 
     [Header("사격 설정")]
-    [SerializeField] private float fireRate = 0.2f;  // 발사 간격(초)
+    [SerializeField] private float fireRate = 0.2f;
     [SerializeField] private float bulletSpeed = 15f;
 
     private float nextFireTime = 0f;
@@ -24,9 +27,8 @@ public class WeaponController : MonoBehaviour
     {
         if (Mouse.current == null) return;
 
-        RotateWeaponToMouse();
+        RotateWeaponAndCharacter();
 
-        // 신버전 마우스 좌클릭 감지 (Mouse.current.leftButton)
         if (Mouse.current.leftButton.isPressed && Time.time >= nextFireTime)
         {
             nextFireTime = Time.time + fireRate;
@@ -34,10 +36,8 @@ public class WeaponController : MonoBehaviour
         }
     }
 
-    // 마우스 커서 방향으로 무기 회전
-    private void RotateWeaponToMouse()
+    private void RotateWeaponAndCharacter()
     {
-        // 신버전 마우스 커서 위치 가져오기
         Vector2 mouseScreenPos = Mouse.current.position.ReadValue();
         Vector3 mousePos = mainCamera.ScreenToWorldPoint(mouseScreenPos);
 
@@ -46,24 +46,22 @@ public class WeaponController : MonoBehaviour
         float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
         weaponPivot.rotation = Quaternion.Euler(0, 0, angle);
 
-        // 캐릭터가 좌측을 볼 때 무기가 뒤집히지 않도록 Y축 반전
+        bool isLeft = angle > 90f || angle < -90f;
+
         Vector3 localScale = Vector3.one;
-        if (angle > 90f || angle < -90f)
-        {
-            localScale.y = -1f;
-        }
-        else
-        {
-            localScale.y = 1f;
-        }
+        localScale.y = isLeft ? -1f : 1f;
         weaponPivot.localScale = localScale;
+
+        if (characterSprite != null)
+        {
+            characterSprite.flipX = isLeft;
+        }
     }
 
     private void Shoot()
     {
         if (bulletPrefab == null || muzzle == null) return;
 
-        // 총알 생성 및 날아가기
         GameObject bullet = Instantiate(bulletPrefab, muzzle.position, muzzle.rotation);
         if (bullet.TryGetComponent(out Rigidbody2D rb))
         {

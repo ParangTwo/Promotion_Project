@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1050186772771407009}
   - component: {fileID: 2081271703649416400}
   - component: {fileID: 8576967838259932931}
-  - component: {fileID: 7804126968815911820}
+  - component: {fileID: 8495068747910629664}
   - component: {fileID: 399528967134746687}
   - component: {fileID: 1289642149820372704}
   m_Layer: 0
@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -5.07698, y: -1.44459, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 309628545801974608, guid: 564fedabfe62bd5439a41debe47e7d9a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -133,7 +133,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1.2, y: 1.8}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -141,7 +141,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &7804126968815911820
+--- !u!114 &8495068747910629664
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -150,10 +150,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2828044166805311891}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05fcdb15b6cf9624d81cb87a727cbd39, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a3149afb0acf22409aa1fa93026ae61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 30
+  spriteRenderer: {fileID: 0}
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!50 &399528967134746687
 Rigidbody2D:
   serializedVersion: 5

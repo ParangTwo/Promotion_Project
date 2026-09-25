@@ -5,25 +5,30 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private int maxHealth = 100;
     private int currentHealth;
 
-    private void Awake()
+    private void Start()
     {
         currentHealth = maxHealth;
+        UpdateHealthUI();
     }
 
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        Debug.Log($"플레이어 피격! 남은 체력: {currentHealth}");
+        if (currentHealth < 0) currentHealth = 0;
+
+        UpdateHealthUI();
 
         if (currentHealth <= 0)
         {
-            Die();
+            // 플레이어 사망 로직
         }
     }
 
-    private void Die()
+    private void UpdateHealthUI()
     {
-        // 게임오버 연출 / 리스폰 로직 구현 위치
-        Debug.Log("플레이어 사망");
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateHealthUI(currentHealth, maxHealth);
+        }
     }
 }
